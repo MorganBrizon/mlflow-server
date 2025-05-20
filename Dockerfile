@@ -9,9 +9,12 @@ WORKDIR /mlflow
 # Définir le port attendu
 ENV PORT=8080
 
-# Lancer MLflow server en écoutant sur le bon port
-CMD ["mlflow", "server", \
-     "--host", "0.0.0.0", \
-     "--port", "8080", \
-     "--backend-store-uri", "env:DATABASE_URL", \
-     "--default-artifact-root", "/mlflow/artifacts"]
+ENV BACKEND_STORE_URI=""
+ENV ARTIFACT_ROOT="/mlflow/artifacts"
+
+CMD ["sh", "-c", \
+     "mlflow server \
+     --host 0.0.0.0 \
+     --port 8080 \
+     --backend-store-uri $BACKEND_STORE_URI \
+     --default-artifact-root $ARTIFACT_ROOT"]
