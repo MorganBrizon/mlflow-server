@@ -2,15 +2,16 @@ FROM python:3.10-slim
 
 RUN pip install mlflow psycopg2-binary
 
-ENV MLFLOW_HOME=/mlflow
-RUN mkdir -p $MLFLOW_HOME
-WORKDIR $MLFLOW_HOME
+# Crée un dossier pour les artefacts
+RUN mkdir -p /mlflow/artifacts
+WORKDIR /mlflow
 
-EXPOSE 5000
+# Définir le port attendu
+ENV PORT=8080
 
-CMD ["sh", "-c", \
-     "mlflow server \
-      --backend-store-uri=$DATABASE_URL \
-      --default-artifact-root=/mlflow/artifacts \
-      --host=0.0.0.0 \
-      --port=8080"]
+# Lancer MLflow server en écoutant sur le bon port
+CMD ["mlflow", "server", \
+     "--host", "0.0.0.0", \
+     "--port", "8080", \
+     "--backend-store-uri", "env:DATABASE_URL", \
+     "--default-artifact-root", "/mlflow/artifacts"]
